@@ -8,18 +8,27 @@ const getAll = async () => {
   return books;
 }
 
-const getByAuthorId = async (author_id) => {
+const getByAuthorId = async (id) => {
   const [books] = await connection.execute(
-    'SELECT id, title, author_id FROM books WHERE author_id=?',
-    [author_id]
+    'SELECT id, title, author_id FROM books WHERE id=?',
+    [id]
   );
 
   if (!books.length) return null;
 
-  return books;
+  return books[0];
+}
+
+const isValid = (authorId, title) => {
+
+  if (!title || title.length < 3) return false;
+  if (!(authorId || author.some(id => id === authorId))) return false;
+
+  return true;
 }
 
 module.exports = {
   getAll,
   getByAuthorId,
+  isValid,
 }
