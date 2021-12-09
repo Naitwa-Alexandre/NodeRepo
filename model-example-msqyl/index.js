@@ -43,12 +43,12 @@ app.post('/authors', async (req, res) => {
   res.status(200).json({ message: 'Author sucessfully created' });
 });
 
-app.get('/books', async (_req, res) => {
-  const books = await Books.getAll();
+app.get('/books', async (req, res) => {
+  const { author_id } = req.query;
 
-  if (!books) {
-    return res.status(404).json({ message: 'Book not found ' });
-  }
+  const books = (author_id)
+  ? await Books.getByAuthorId(author_id)
+  : await Books.getAll();
 
   res.status(200).json(books);
 });
@@ -66,15 +66,14 @@ app.get('/books/:id', async (req, res) => {
 });
 
 app.post('/books', async (req, res) => {
-  const { authorId, title } = req.body;
-
-  console.log(authorId, title);
+  const { author_id, title } = req.body;
   
-  if (!Books.isValid(authorId, title)) {
+  if (!await Books.isValid(author_id, title)) {
     return res.status(400).json({ message: 'Invalida data' });
   }
 
-  
+  await Books.create(title, author_id);
+
   res.status(200).json({ message: 'Book sucessfully created' });
 });
 

@@ -63,9 +63,20 @@ const create = async (firstName, middleName, lastName) => {
   );
 }
 
+const findById = async (authorId) => {
+  const query = 'SELECT * FROM model.example.authors WHERE id=?';
+
+  const author = await connection.execute(query, [authorId]);
+
+  if (!author.length) return true;
+
+  return false;
+}
+
 module.exports = {
   getAll,
   getById,
   create,
-  isValid
+  isValid,
+  findById,
 }
