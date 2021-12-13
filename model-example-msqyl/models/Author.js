@@ -24,18 +24,18 @@ const serialize = ({ id, first_name, middle_name, last_name }) => {
 }
 
 const getAll = async () => {
-  return connection()
-    .then((db) => db.collection('authors').find().toArray())
-    .then((authors) => {
-      authors.map(({ _id, firstName, middleName, lastName }) => {
-        getNewAuthor({
-          id, _id,
-          firstName,
-          middleName,
-          lastName
-        });
-      });
-    });
+    return connection()
+        .then((db) => db.collection('authors').find().toArray())
+            .then((authors) =>
+                authors.map(({ _id, firstName, middleName, lastName }) =>
+                getNewAuthor({
+                    id: _id,
+                    firstName,
+                    middleName,
+                    lastName,
+                })
+            )
+        );
 }
 
 const getById = async (id) => {

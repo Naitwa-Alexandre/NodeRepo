@@ -44,11 +44,11 @@ app.post('/authors', async (req, res) => {
 });
 
 app.get('/books', async (req, res) => {
-  const { author_id } = req.query;
+  const books = await Books.getAll();
 
-  const books = (author_id)
-  ? await Books.getByAuthorId(author_id)
-  : await Books.getAll();
+  if (!books.length) {
+    return res.status(404).json({ message: 'Books not found' });
+  }
 
   res.status(200).json(books);
 });
