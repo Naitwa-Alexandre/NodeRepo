@@ -1,4 +1,5 @@
 const connection = require('./connection');
+const { ObjectId } = require('mongodb');
 
 const getNewAuthor = ({ id, firstName, middleName, lastName }) => {
   const fullName = [firstName, middleName, lastName]
@@ -39,14 +40,12 @@ const getAll = async () => {
 }
 
 const getById = async (id) => {
-  const [author] = await connection.execute(
-    'SELECT id, first_name, middle_name, last_name FROM authors WHERE id=?',
-    [id]
-  );
+  const authorData = await connection()
+    .then((db) => db.collection('authors').findOne(ObjectId(id))) 
 
-  if (!author.length) return null;
+  if (!authorData) return null;
 
-  const { firstName, middleName, lastName } = author.map(serialize)[0];
+  const { firstName, middleName, lastName } = authorData;
 
   return getNewAuthor({
     id,
@@ -64,10 +63,12 @@ const isValid = (firstName, middleName, lastName) => {
 }
 
 const create = async (firstName, middleName, lastName) => {
-  connection.execute(
-    'INSERT INTO model_example.authors (first_name, middle_name, last_name) VALUES (?, ?, ?)',
-    [firstName, middleName, lastName]
-  );
+  await connection()
+    .then((db) => db.collection('authors').insertOne({
+      firstName,
+      middleName,
+      lastName
+    }));
 }
 
 const findById = async (authorId) => {
