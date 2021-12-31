@@ -3,7 +3,7 @@ const Cep = require('../models/Cep');
 const CEP_REGEX = /\d{5}-?\d{3}/;
 
 const findAdressByCep = async (searchedCep) => {
-  if (CEP_REGEX.test(cep)) {
+  if (!CEP_REGEX.test(cep)) {
     return {
       error: {
         code: 'invalidData',
