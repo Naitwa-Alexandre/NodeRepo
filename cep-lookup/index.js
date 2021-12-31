@@ -9,11 +9,12 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.get('/ping', (req, res) => {
+app.get('/ping', (_req, res) => {
   return res.status(200).json({ message: 'pong!' });
 });
 
 app.get('/cep/:cep', Cep.findAdressByCep);
+app.post('/cep', Cep.create);
 
 app.use(errorMiddleware);
 

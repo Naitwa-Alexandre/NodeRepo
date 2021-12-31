@@ -16,10 +16,10 @@ const getNewCep = ({ cep, largadouro, bairro, localidade, uf }) => ({
   uf
 });
 
-const findAdressByCep = (cepToSearch) => {
+const findAdressByCep = async (cepToSearch) => {
   const treatedCep = cepToSearch.replace('-', '');
 
-  const query = 'SELECT cep, largadouro, bairro, localidade, uf FROM ceps WHERE cep = ?';
+  const query = 'SELECT cep, logradouro, bairro, localidade, uf FROM ceps WHERE cep = ?';
 
   const result = await connection.execute(query, [treatedCep])
     .then(([results]) => (results.length ? results[0] : null));
@@ -29,6 +29,17 @@ const findAdressByCep = (cepToSearch) => {
   return getNewCep(result);
 }
 
+const create = async ({ cep: rawCep, logradouro, bairro, localidade, uf }) => {
+  const cep = rawCep.replace(/'-'/ig, '');
+
+  const query = 'INSERT INTO ceps (cep, logradouro, bairro, localidade, uf) VALUES (?, ?, ?, ?, ?)';
+
+  await connection.execute(query, [cep, logradouro, bairro, localidade, uf ]);
+
+  return { cep, logradouro, bairro, localidade, uf };
+}
+
 module.exports = {
   findAdressByCep,
+  create,
 }
